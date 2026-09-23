@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="author" content="Julian E Bowen" />
+    <meta
+      name="description"
+      content="Step-through visualizations of CS5800 algorithm problems, with problem statements, pseudocode, and correctness proofs."
+    />
+    <link rel="icon" href="./images/favicon.svg" type="image/svg+xml" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="./css/styles.css" />
+    <link rel="stylesheet" href="./css/visualizer.css" />
+    <title>Problem Set Visualizer &middot; Julian Bowen</title>
+  </head>
+  <body class="theme-dark">
+    <a class="skip-link" href="#main">Skip to main content</a>
+
+    <header class="site-header">
+      <p class="site-header__brand">Julian Bowen</p>
+      <nav class="site-nav" aria-label="Main">
+        <ul class="site-nav__list">
+          <li><a class="site-nav__link" href="./index.html">Home</a></li>
+          <li><a class="site-nav__link" href="./about.html">About</a></li>
+          <li>
+            <a
+              class="site-nav__link"
+              aria-current="page"
+              href="./problem-set-visualizer.html"
+              >Visualizer</a
+            >
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    <main class="main viz-page" id="main">
+      <div>
+        <h1 class="page-title">Problem Set Visualizer</h1>
+        <p class="viz-page__intro">
+          CS5800 Algorithms, Fall 2026. Pick a problem, read the statement,
+          pseudocode, or proof, and step through the algorithm on the examples
+          or on your own input.
+        </p>
+      </div>
+
+      <section class="visualizer" aria-label="Algorithm visualizer">
+        <div class="viz-toolbar">
+          <label class="viz-field">
+            <span class="viz-field__label">Problem</span>
+            <select class="viz-select" data-viz="problem"></select>
+          </label>
+          <label class="viz-field">
+            <span class="viz-field__label">Show</span>
+            <select class="viz-select" data-viz="view"></select>
+          </label>
+        </div>
+
+        <article class="viz-panel viz-text" data-viz="text"></article>
+
+        <section class="viz-panel viz-player" aria-label="Visualization">
+          <div class="viz-inputs">
+            <div
+              class="viz-variants"
+              role="group"
+              aria-label="Algorithm variant"
+              data-viz="variants"
+            ></div>
+            <label class="viz-field">
+              <span class="viz-field__label">Example</span>
+              <select class="viz-select" data-viz="preset"></select>
+            </label>
+            <button class="viz-button" type="button" data-viz="random">
+              Random input
+            </button>
+            <form class="viz-custom" data-viz="form" novalidate>
+              <div class="viz-custom__fields" data-viz="fields"></div>
+              <button class="viz-button" type="submit">Run</button>
+            </form>
+            <p class="viz-error" role="alert" data-viz="error"></p>
+          </div>
+
+          <div class="viz-body">
+            <div class="viz-stage" data-viz="stage"></div>
+            <aside class="viz-side" aria-label="Algorithm state">
+              <ol class="viz-code" data-viz="code"></ol>
+              <dl class="viz-stats" data-viz="stats"></dl>
+              <p class="viz-invariant">
+                <span class="viz-invariant__label">Invariant</span>
+                <span data-viz="invariant"></span>
+              </p>
+            </aside>
+          </div>
+
+          <p class="viz-caption" aria-live="polite" data-viz="caption"></p>
+
+          <div class="viz-transport">
+            <div class="viz-transport__buttons">
+              <button class="viz-button" type="button" data-viz="reset">
+                Reset
+              </button>
+              <button class="viz-button" type="button" data-viz="back">
+                &larr; Back
+              </button>
+              <button
+                class="viz-button viz-button--primary"
+                type="button"
+                data-viz="play"
+              >
+                Play
+              </button>
+              <button class="viz-button" type="button" data-viz="forward">
+                Step &rarr;
+              </button>
+            </div>
+            <label class="viz-field viz-field--grow">
+              <span class="viz-field__label" data-viz="counter"
+                >Step 1 / 1</span
+              >
+              <input
+                class="viz-range"
+                type="range"
+                min="0"
+                max="0"
+                value="0"
+                data-viz="scrub"
+              />
+            </label>
+            <label class="viz-field">
+              <span class="viz-field__label"
+                >Speed <output data-viz="speed-out">1&times;</output></span
+              >
+              <input
+                class="viz-range"
+                type="range"
+                min="0"
+                max="5"
+                value="2"
+                data-viz="speed"
+              />
+            </label>
+          </div>
+          <p class="viz-hint">
+            Keyboard: <kbd>&larr;</kbd> <kbd>&rarr;</kbd> step &middot;
+            <kbd>Space</kbd> play/pause &middot; <kbd>R</kbd> reset
+          </p>
+        </section>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p class="site-footer__text">
+        &copy; 2026 Julian E Bowen &middot; MIT Licensed &middot;
+        <a
+          class="site-footer__link"
+          href="https://github.com/jbowen999/home_page"
+          >Source</a
+        >
+      </p>
+    </footer>
+
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script type="module" src="./js/main.js"></script>
+  </body>
+</html>

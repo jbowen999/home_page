@@ -10,3 +10,6 @@ dist/
 # logs
 npm-debug.log*
 *.log
+
+# course problem-set PDFs (local reference only)
+docs/*.pdf

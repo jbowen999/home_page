@@ -1,0 +1,718 @@
+/* ==========================================================================
+   Problem set visualizer. Loaded only by problem-set-visualizer.html, after
+   styles.css.
+   1. Dark theme tokens
+   2. Page layout
+   3. Controls
+   4. Text pane
+   5. Player pane
+   6. Drawing primitives (arrays, tags, trees, stack frames)
+   ========================================================================== */
+
+/* 1. Dark theme tokens ---------------------------------------------------- */
+.theme-dark {
+  color-scheme: dark;
+
+  --color-bg: #131313;
+  --color-surface: #1c1c1b;
+  --color-text: #e9e8e3;
+  --color-muted: #a19f97;
+  --color-accent: #7fd1a3;
+  --color-border: #3b3b38;
+
+  /* Meaning is consistent across every visualization. */
+  --viz-low: #7cb7ff;
+  --viz-high: #ffab70;
+  --viz-active: #f2d45c;
+  --viz-good: #7fd1a3;
+  --viz-raised: #262625;
+}
+
+/* 2. Page layout ---------------------------------------------------------- */
+.viz-page {
+  gap: var(--space-lg);
+}
+
+.viz-page__intro {
+  margin: 0;
+  color: var(--color-muted);
+}
+
+.visualizer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.viz-panel {
+  padding: var(--space-md) var(--space-lg);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: calc(var(--radius) * 3);
+}
+
+/* 3. Controls ------------------------------------------------------------- */
+.viz-toolbar,
+.viz-inputs,
+.viz-custom,
+.viz-custom__fields,
+.viz-variants,
+.viz-transport,
+.viz-transport__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-sm);
+}
+
+.viz-variants[hidden] {
+  display: none;
+}
+
+.viz-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.viz-field--grow {
+  flex: 1 1 12rem;
+}
+
+.viz-field__label {
+  font-size: 0.75rem;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.viz-select,
+.viz-input,
+.viz-button {
+  min-height: 2.25rem;
+  padding: 0.35rem 0.75rem;
+  font: inherit;
+  font-size: 0.875rem;
+  color: var(--color-text);
+  background-color: var(--viz-raised);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.viz-select {
+  max-width: 100%;
+}
+
+.viz-input--int {
+  width: 5rem;
+}
+
+.viz-input--list {
+  width: 16rem;
+}
+
+.viz-button {
+  cursor: pointer;
+}
+
+.viz-button:hover:not(:disabled) {
+  border-color: var(--color-accent);
+}
+
+.viz-button:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+.viz-button--primary,
+.viz-toggle[aria-pressed="true"] {
+  color: var(--color-bg);
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.viz-button--primary {
+  min-width: 6rem;
+}
+
+.viz-select:focus-visible,
+.viz-input:focus-visible,
+.viz-button:focus-visible,
+.viz-range:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.viz-range {
+  width: 100%;
+  min-width: 8rem;
+  accent-color: var(--color-accent);
+}
+
+.viz-error {
+  flex-basis: 100%;
+  margin: 0;
+  color: var(--viz-high);
+  font-size: 0.875rem;
+}
+
+.viz-error:empty {
+  display: none;
+}
+
+/* 4. Text pane ------------------------------------------------------------ */
+.viz-text {
+  min-height: 12rem;
+  max-height: 40rem;
+  overflow-y: auto;
+}
+
+/* The site caps paragraphs at 65ch; inside the panes text should fill. */
+.viz-text p,
+.viz-text li,
+.viz-text dd {
+  max-width: none;
+}
+
+.viz-text h4 {
+  margin: var(--space-md) 0 var(--space-xs);
+  font-size: 0.8rem;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* Proofs: a boxed claim, then labeled steps in a two-column grid. */
+.viz-claim {
+  margin: var(--space-sm) 0;
+  padding: var(--space-xs) var(--space-md);
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.viz-claim > p {
+  margin: var(--space-xs) 0;
+}
+
+.viz-claim__label,
+.viz-steps dt {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+/* Step labels may contain math, so only the claim label is uppercased. */
+.viz-claim__label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.viz-steps {
+  display: grid;
+  grid-template-columns: minmax(8rem, max-content) minmax(0, 1fr);
+  margin: var(--space-sm) 0;
+}
+
+.viz-steps dt,
+.viz-steps dd {
+  padding: var(--space-xs) 0;
+  border-top: 1px solid var(--color-border);
+}
+
+.viz-steps dt {
+  padding-right: var(--space-md);
+  padding-top: calc(var(--space-xs) + 0.2rem);
+}
+
+.viz-steps dd {
+  margin: 0;
+}
+
+.viz-steps dd > p {
+  margin: 0 0 var(--space-xs);
+}
+
+.viz-steps dd > p:last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 40rem) {
+  .viz-steps {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .viz-steps dd {
+    border-top: 0;
+    padding-top: 0;
+  }
+}
+
+.viz-qed {
+  float: right;
+  color: var(--color-muted);
+}
+
+.viz-text__eyebrow {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.viz-text__title {
+  margin: 0.25rem 0 var(--space-md);
+  font-size: 1.25rem;
+}
+
+.viz-text h3 {
+  margin: var(--space-md) 0 var(--space-xs);
+  font-size: 1rem;
+  color: var(--color-accent);
+}
+
+.viz-pre {
+  margin: var(--space-sm) 0;
+  padding: var(--space-sm) var(--space-md);
+  overflow-x: auto;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  background-color: var(--color-bg);
+  border-radius: var(--radius);
+}
+
+.viz-note {
+  margin: var(--space-md) 0 0;
+  padding: var(--space-xs) var(--space-md);
+  font-size: 0.875rem;
+  background-color: var(--color-bg);
+  border-left: 3px solid var(--color-accent);
+  border-radius: var(--radius);
+}
+
+.viz-table {
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.viz-table th,
+.viz-table td {
+  padding: 0.25rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.viz-table th {
+  color: var(--color-muted);
+  font-weight: 500;
+}
+
+.viz-text .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* 5. Player pane ---------------------------------------------------------- */
+.viz-player {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.viz-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 27rem);
+  gap: var(--space-md);
+}
+
+@media (max-width: 52rem) {
+  .viz-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.viz-stage {
+  min-height: 14rem;
+  padding: var(--space-sm) var(--space-md);
+  overflow-x: auto;
+  background-color: var(--color-bg);
+  border-radius: calc(var(--radius) * 2);
+}
+
+.viz-side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  min-width: 0;
+}
+
+.viz-code {
+  margin: 0;
+  padding: var(--space-xs) 0;
+  overflow-x: auto;
+  font-size: 0.75rem;
+  line-height: 1.55;
+  list-style: none;
+  counter-reset: line;
+  background-color: var(--color-bg);
+  border-radius: calc(var(--radius) * 2);
+}
+
+.viz-code li {
+  padding: 0 var(--space-sm) 0 0;
+  white-space: pre;
+  counter-increment: line;
+  border-left: 3px solid transparent;
+}
+
+.viz-code li::before {
+  display: inline-block;
+  width: 2.25rem;
+  padding-right: 0.5rem;
+  color: var(--color-muted);
+  text-align: right;
+  content: counter(line);
+  opacity: 0.6;
+}
+
+.viz-code li.is-current {
+  background-color: color-mix(in srgb, var(--viz-active) 16%, transparent);
+  border-left-color: var(--viz-active);
+}
+
+.viz-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-xs);
+  margin: 0;
+}
+
+.viz-stats div {
+  padding: 0.35rem 0.6rem;
+  background-color: var(--color-bg);
+  border-radius: var(--radius);
+}
+
+.viz-stats dt {
+  font-size: 0.7rem;
+  color: var(--color-muted);
+}
+
+.viz-stats dd {
+  margin: 0;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.viz-invariant {
+  margin: 0;
+  padding: 0.5rem 0.6rem;
+  font-size: 0.8rem;
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius);
+}
+
+.viz-invariant__label {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--color-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.viz-caption {
+  min-height: 3.2em;
+  max-width: none;
+  margin: 0;
+  padding: var(--space-xs) var(--space-md);
+  background-color: var(--viz-raised);
+  border-left: 3px solid var(--viz-active);
+  border-radius: var(--radius);
+}
+
+.viz-transport {
+  align-items: center;
+}
+
+.viz-hint {
+  max-width: none;
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--color-muted);
+}
+
+.viz-hint kbd {
+  padding: 0 0.3rem;
+  font: inherit;
+  border: 1px solid var(--color-border);
+  border-radius: 3px;
+}
+
+/* 6. Drawing primitives --------------------------------------------------- */
+.viz-label {
+  max-width: none;
+  margin: var(--space-sm) 0 var(--space-xs);
+  font-size: 0.75rem;
+  color: var(--color-muted);
+}
+
+.viz-empty {
+  color: var(--color-muted);
+}
+
+/* Arrays: one slot per element, with tag rows above and below the cell. */
+.viz-array {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.viz-array__slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.viz-array__tags {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  min-height: 1.1rem;
+}
+
+.viz-array__index {
+  font-size: 0.7rem;
+  color: var(--color-muted);
+}
+
+.viz-cell {
+  display: grid;
+  place-items: center;
+  min-width: 2.6rem;
+  height: 2.6rem;
+  padding: 0 0.4rem;
+  font-weight: 600;
+  background-color: var(--viz-raised);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius);
+  transition:
+    opacity 0.2s,
+    border-color 0.2s,
+    background-color 0.2s,
+    transform 0.2s;
+}
+
+.viz-cell--coin {
+  width: 2.6rem;
+  padding: 0;
+  border-radius: 50%;
+}
+
+.viz-cell.is-dim {
+  opacity: 0.3;
+}
+
+.viz-cell.is-active {
+  border-color: var(--viz-active);
+}
+
+.viz-cell.is-good {
+  background-color: color-mix(in srgb, var(--viz-good) 25%, transparent);
+  border-color: var(--viz-good);
+}
+
+.viz-cell.is-compare {
+  background-color: color-mix(in srgb, var(--viz-active) 30%, transparent);
+  border-color: var(--viz-active);
+  transform: translateY(-3px);
+  animation: viz-pulse 0.4s ease-out;
+}
+
+@keyframes viz-pulse {
+  from {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--viz-active) 60%, transparent);
+  }
+  to {
+    box-shadow: 0 0 0 8px transparent;
+  }
+}
+
+.viz-tag {
+  padding: 0 0.35rem;
+  font-size: 0.65rem;
+  line-height: 1.5;
+  font-weight: 600;
+  border-radius: 999px;
+  color: var(--color-bg);
+  background-color: var(--color-muted);
+}
+
+.viz-tag--low {
+  background-color: var(--viz-low);
+}
+
+.viz-tag--high {
+  background-color: var(--viz-high);
+}
+
+.viz-tag--active {
+  background-color: var(--viz-active);
+}
+
+.viz-tag--good {
+  background-color: var(--viz-good);
+}
+
+.viz-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  max-width: none;
+  margin: var(--space-md) 0 0;
+  font-size: 0.75rem;
+  color: var(--color-muted);
+}
+
+.viz-legend__item::before {
+  display: inline-block;
+  width: 0.75rem;
+  height: 0.75rem;
+  margin-right: 0.35rem;
+  vertical-align: -0.1rem;
+  content: "";
+  border: 2px solid var(--color-border);
+  border-radius: 50%;
+}
+
+.viz-legend__item--compare::before {
+  background-color: color-mix(in srgb, var(--viz-active) 30%, transparent);
+  border-color: var(--viz-active);
+}
+
+.viz-legend__item--active::before {
+  border-color: var(--viz-active);
+}
+
+.viz-legend__item--dim::before {
+  opacity: 0.3;
+}
+
+/* Recursion tree: rows are depths, columns are array positions. */
+.viz-tree {
+  display: grid;
+  gap: 0.3rem;
+  min-width: 24rem;
+}
+
+.viz-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.2rem 0.1rem;
+  overflow: hidden;
+  font-size: 0.7rem;
+  text-align: center;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.viz-node.is-waiting {
+  color: var(--color-muted);
+  border-style: dashed;
+}
+
+.viz-node.is-active {
+  border-color: var(--viz-active);
+  background-color: color-mix(in srgb, var(--viz-active) 14%, transparent);
+}
+
+.viz-node.is-done {
+  border-color: var(--viz-good);
+}
+
+.viz-node__value {
+  font-weight: 600;
+}
+
+/* Two columns that stack on narrow screens. */
+.viz-split {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: var(--space-md);
+}
+
+/* Call stack frames. */
+.viz-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.viz-frame {
+  padding: 0.4rem 0.6rem;
+  font-size: 0.8rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.viz-frame--active {
+  border-color: var(--viz-active);
+  background-color: color-mix(in srgb, var(--viz-active) 10%, transparent);
+}
+
+.viz-frame--waiting {
+  opacity: 0.6;
+}
+
+.viz-frame__head {
+  font-weight: 600;
+}
+
+.viz-frame__head small {
+  font-weight: 400;
+  color: var(--color-muted);
+}
+
+.viz-frame__vars {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 var(--space-sm);
+  margin: 0.2rem 0 0;
+}
+
+.viz-frame__vars div {
+  display: flex;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.viz-frame__vars dt {
+  color: var(--color-muted);
+}
+
+.viz-frame__vars dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Chip list, e.g. pairs found so far. */
+.viz-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.viz-chips li {
+  padding: 0.1rem 0.5rem;
+  font-size: 0.8rem;
+  background-color: var(--viz-raised);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+}

@@ -42,10 +42,11 @@ npm run check   # both, read-only — run this before you push
 src/
   index.html        home
   about.html        second page
-  ai-page.html      third, AI-generated page
+  problem-set-visualizer.html   third, AI-generated page (see docs/visualizer.md)
   css/styles.css
   js/main.js        entry point (ES module)
   js/feature.js     the original component's logic
+  js/visualizer/    the visualizer's modules, one file per problem
   images/
 docs/DESIGN.md      design document
 ```
@@ -59,10 +60,10 @@ code lives.
 
 TODO: fill this in as you go. For each tool, record:
 
-| Tool        | Model & version | What it was used for                                                                                                                                                                                        | Prompt(s)                                                                                                                                                                 |
-| ----------- | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Claude Code | Opus 5          | Scaffolded the project skeleton: folder layout, `package.json`, ESLint/Prettier config, HTML page shells, CSS token file, GitHub Pages workflow, and this README's outline. No page content was AI-written. | "i want you to scaffold this project for me according to this [pasted assignment rubric]" then "when i say scaffold, i actually just want a skeleton ... the admin stuff" |
-|             |                 |                                                                                                                                                                                                             |                                                                                                                                                                           |
+| Tool        | Model & version | What it was used for                                                                                                                                                                                                                                                | Prompt(s)                                                                                                                                                                                                                                                      |
+| ----------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Claude Code | Opus 5          | Scaffolded the project skeleton: folder layout, `package.json`, ESLint/Prettier config, HTML page shells, CSS token file, GitHub Pages workflow, and this README's outline. No page content was AI-written.                                                         | "i want you to scaffold this project for me according to this [pasted assignment rubric]" then "when i say scaffold, i actually just want a skeleton ... the admin stuff"                                                                                      |
+| Claude Code | Opus 5.5        | Generated the AI page: a CS5800 problem set visualizer (`problem-set-visualizer.html`, `css/visualizer.css`, `js/visualizer/`) with step-through animations for Pset 1 #1, #4, #5, pseudocode/proof views copied from the course solutions, and docs/visualizer.md. | "an algorithm visualizer that i can use throughout the semester ... dropdown1 is for selecting which problem ... dropdown two is change the top pane from problem description to pseudocode to correctness proof ..." plus answers to its clarifying questions |
 
 If you did not use a tool for some part of the project, say so explicitly — the
 rubric asks for the description either way.
