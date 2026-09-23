@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="author" content="Julian E Bowen" />
+    <meta
+      name="description"
+      content="TODO: one-sentence description of this homepage for search engines and link previews."
+    />
+    <link rel="icon" href="./images/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./css/styles.css" />
+    <title>Julian Bowen</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+
+    <header class="site-header">
+      <p class="site-header__brand">Julian Bowen</p>
+      <nav class="site-nav" aria-label="Main">
+        <ul class="site-nav__list">
+          <li>
+            <a class="site-nav__link" aria-current="page" href="./index.html"
+              >Home</a
+            >
+          </li>
+          <li><a class="site-nav__link" href="./about.html">About</a></li>
+          <li><a class="site-nav__link" href="./ai-page.html">AI Page</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main class="main" id="main">
+      <!-- TODO: hero — who you are, what you do, one call to action -->
+      <section class="hero">
+        <div class="hero-image">
+          <h1 class="hero__title">Julian Bowen</h1>
+          <p class="hero__tagline">TODO: tagline.</p>
+        </div>
+      </section>
+
+      <!-- TODO: the original component that differentiates this homepage.
+           Markup goes here; behavior goes in ./js/main.js -->
+      <section class="feature" aria-labelledby="feature-title">
+        <h2 class="feature__title" id="feature-title">
+          TODO: original component
+        </h2>
+      </section>
+
+      <!-- TODO: meaningful homepage content (projects, experience, writing...) -->
+      <section class="cards" aria-labelledby="cards-title">
+        <h2 class="cards__title" id="cards-title">TODO: section heading</h2>
+        <ul class="cards__grid"></ul>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p class="site-footer__text">
+        &copy; 2026 Julian E Bowen &middot; MIT Licensed &middot;
+        <a
+          class="site-footer__link"
+          href="https://github.com/jbowen999/home_page"
+          >Source</a
+        >
+      </p>
+    </footer>
+
+    <script type="module" src="./js/main.js"></script>
+  </body>
+</html>

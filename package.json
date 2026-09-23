@@ -1,0 +1,31 @@
+{
+  "name": "home_page",
+  "version": "1.0.0",
+  "description": "Personal homepage for CS5610 Web Development at Northeastern University.",
+  "author": "Julian E Bowen",
+  "license": "MIT",
+  "type": "module",
+  "private": true,
+  "homepage": "https://jbowen999.github.io/home_page/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jbowen999/home_page.git"
+  },
+  "scripts": {
+    "start": "http-server ./src -p 8080 -c-1 -o",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "check": "npm run format:check && npm run lint"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.12.0",
+    "eslint": "^9.12.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.5.6",
+    "globals": "^15.11.0",
+    "http-server": "^14.1.1",
+    "prettier": "^3.3.3"
+  }
+}

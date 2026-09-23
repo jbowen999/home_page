@@ -1,0 +1,12 @@
+node_modules/
+dist/
+
+# editor / OS cruft
+.DS_Store
+.vscode/
+.idea/
+*.swp
+
+# logs
+npm-debug.log*
+*.log
