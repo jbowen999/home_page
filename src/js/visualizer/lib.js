@@ -112,3 +112,76 @@ export function arrayRow(values, opts = {}) {
 
   return `<div class="viz-array">${slots}</div>`;
 }
+
+/**
+ * Draw a 2D table of cells with row and column headers: a matrix, a DP
+ * table, a schedule. A cell that is null or undefined is drawn blank, and a
+ * cell given as { html } is inserted unescaped (e.g. a bar).
+ *
+ * @param {Array<Array<number|string|null|{html: string}>>} rows
+ * @param {object} [opts]
+ * @param {string[]} [opts.rowLabels] Header for each row.
+ * @param {string[]} [opts.colLabels] Header for each column.
+ * @param {string} [opts.corner] Top-left header cell, when both are given.
+ * @param {(r: number, c: number) => string} [opts.cellClass] Extra classes
+ *   for cell (r, c), 0-based: is-dim, is-active, is-compare, is-good, is-low,
+ *   is-high.
+ * @param {number} [opts.block] Leave a gap after every `block` rows and
+ *   columns, e.g. to show the quadrants of a matrix.
+ * @param {boolean} [opts.small] Compact cells for little side tables.
+ */
+export function grid(rows, opts = {}) {
+  const {
+    rowLabels,
+    colLabels,
+    corner = "",
+    cellClass = () => "",
+    block = 0,
+    small = false,
+  } = opts;
+  const cols = rows[0]?.length ?? 0;
+  const gapAfter = (k, count) =>
+    block > 0 && k < count - 1 && (k + 1) % block === 0;
+  const gapCell = '<td class="viz-grid__gap" aria-hidden="true"></td>';
+  const gapHead = '<th class="viz-grid__gap" aria-hidden="true"></th>';
+
+  const head = colLabels
+    ? `<thead><tr>${rowLabels ? `<th>${escapeHtml(corner)}</th>` : ""}${colLabels
+        .map(
+          (label, c) =>
+            `<th scope="col">${escapeHtml(label)}</th>${gapAfter(c, cols) ? gapHead : ""}`
+        )
+        .join("")}</tr></thead>`
+    : "";
+
+  const width = cols + (block > 0 ? Math.floor((cols - 1) / block) : 0);
+  const gapRow = `<tr class="viz-grid__gap-row" aria-hidden="true"><td colspan="${width + (rowLabels ? 1 : 0)}"></td></tr>`;
+
+  const body = rows
+    .map((row, r) => {
+      const cells = row
+        .map((value, c) => {
+          const blank = value === null || value === undefined;
+          const content = blank
+            ? ""
+            : typeof value === "object"
+              ? value.html
+              : escapeHtml(value);
+          const classes = `${blank ? "is-blank " : ""}${cellClass(r, c)}`;
+          return `<td class="${classes.trim()}">${content}</td>${gapAfter(c, cols) ? gapCell : ""}`;
+        })
+        .join("");
+      const label = rowLabels
+        ? `<th scope="row">${escapeHtml(rowLabels[r])}</th>`
+        : "";
+      return `<tr>${label}${cells}</tr>${gapAfter(r, rows.length) ? gapRow : ""}`;
+    })
+    .join("");
+
+  return `<table class="viz-grid${small ? " viz-grid--small" : ""}">${head}<tbody>${body}</tbody></table>`;
+}
+
+/** A labeled figure for side-by-side drawings inside `.viz-figures`. */
+export function figure(label, inner) {
+  return `<div class="viz-figure"><p class="viz-label">${label}</p>${inner}</div>`;
+}

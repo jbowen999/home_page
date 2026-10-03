@@ -34,7 +34,7 @@ export default {
   variants: [{
     id, label,              // 2+ variants → a toggle in the viz pane
     code: [...lines],       // mini listing; step.line (1-based) highlights
-    fields: [{ name, label, kind: "int" | "list", placeholder }],
+    fields: [{ name, label, kind: "int" | "list" | "matrix", placeholder }],
     presets: [{ label, input }],
     random: () => input,
     validate: (input) => "" | "error message",
@@ -74,7 +74,11 @@ be copies, not live references.
 - **Colors carry meaning** across all problems (`visualizer.css` §1): yellow =
   active/being compared, blue = low/left, orange = high/right, green =
   good/finished, dim = out of scope.
-- **Shared drawing:** `arrayRow()` and `tag()` in `lib.js` cover arrays. Add a
+- **Shared drawing:** `arrayRow()` and `tag()` in `lib.js` cover arrays;
+  `grid()` covers matrices, DP tables, and schedules (`block` adds quadrant
+  gaps), and `figure()` labels drawings laid out in a `.viz-figures` row.
+  For "analyze the recursion tree" parts, `levelsVariant()` in `levels.js`
+  builds a whole level-by-level variant from the recurrence. Add a
   new primitive to `lib.js` + `visualizer.css` §6 when a problem needs one
   (graphs, matrices, DP tables) so later problems can reuse it.
 - **Verify traces** against brute force for many random inputs before trusting

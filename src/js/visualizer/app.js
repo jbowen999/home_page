@@ -51,6 +51,22 @@ const FIELD_KINDS = {
     },
     format: (value) => value.join(", "),
   },
+  // Rows separated by semicolons (or new lines): "1, 2; 3, 4".
+  matrix: {
+    parse(raw, label) {
+      const rows = raw
+        .split(/[;\n]/)
+        .map((row) => row.split(/[\s,]+/).filter(Boolean))
+        .filter((row) => row.length);
+      if (!rows.length || rows.flat().some((p) => !/^-?\d+$/.test(p))) {
+        throw new Error(
+          `${label}: enter rows of integers separated by semicolons, e.g. 1, 2; 3, 4.`
+        );
+      }
+      return rows.map((row) => row.map(Number));
+    },
+    format: (value) => value.map((row) => row.join(", ")).join("; "),
+  },
 };
 
 export function initVisualizer(root) {

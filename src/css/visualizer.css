@@ -6,7 +6,7 @@
    3. Controls
    4. Text pane
    5. Player pane
-   6. Drawing primitives (arrays, tags, trees, stack frames)
+   6. Drawing primitives (arrays, tags, trees, stack frames, grids, bars)
    ========================================================================== */
 
 /* 1. Theme tokens --------------------------------------------------------- */
@@ -102,7 +102,8 @@
   width: 5rem;
 }
 
-.viz-input--list {
+.viz-input--list,
+.viz-input--matrix {
   width: 16rem;
 }
 
@@ -710,4 +711,137 @@
   background-color: var(--viz-raised);
   border: 1px solid var(--color-border);
   border-radius: 999px;
+}
+
+/* Grids: matrices, DP tables, schedules. States match the array cells. */
+.viz-figures {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-sm) var(--space-md);
+}
+
+.viz-figure > .viz-label {
+  margin-top: 0;
+}
+
+.viz-grid {
+  border-collapse: separate;
+  border-spacing: 3px;
+  font-size: 0.8rem;
+}
+
+.viz-grid th {
+  padding: 0 0.3rem;
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--color-muted);
+  white-space: nowrap;
+}
+
+.viz-grid td {
+  min-width: 2.4rem;
+  height: 2rem;
+  padding: 0 0.35rem;
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+  background-color: var(--viz-raised);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius);
+  transition:
+    opacity 0.2s,
+    border-color 0.2s,
+    background-color 0.2s;
+}
+
+.viz-grid--small td {
+  min-width: 1.8rem;
+  height: 1.5rem;
+  font-size: 0.75rem;
+}
+
+/* Quadrant gaps: spacer cells and rows inserted by grid({ block }). */
+.viz-grid .viz-grid__gap {
+  min-width: 0;
+  width: 0;
+  padding: 0;
+  background: none;
+  border: 0;
+}
+
+.viz-grid .viz-grid__gap-row td {
+  height: 0;
+  padding: 0;
+  background: none;
+  border: 0;
+}
+
+.viz-grid td.is-blank {
+  background-color: transparent;
+  border-style: dashed;
+  opacity: 0.5;
+}
+
+.viz-grid td.is-dim {
+  opacity: 0.3;
+}
+
+.viz-grid td.is-active {
+  border-color: var(--viz-active);
+}
+
+.viz-grid td.is-good {
+  background-color: color-mix(in srgb, var(--viz-good) 25%, transparent);
+  border-color: var(--viz-good);
+}
+
+.viz-grid td.is-low {
+  background-color: color-mix(in srgb, var(--viz-low) 18%, transparent);
+  border-color: var(--viz-low);
+}
+
+.viz-grid td.is-high {
+  background-color: color-mix(in srgb, var(--viz-high) 18%, transparent);
+  border-color: var(--viz-high);
+}
+
+.viz-grid td.is-compare {
+  background-color: color-mix(in srgb, var(--viz-active) 30%, transparent);
+  border-color: var(--viz-active);
+}
+
+.viz-legend__item--low::before {
+  background-color: color-mix(in srgb, var(--viz-low) 18%, transparent);
+  border-color: var(--viz-low);
+}
+
+.viz-legend__item--high::before {
+  background-color: color-mix(in srgb, var(--viz-high) 18%, transparent);
+  border-color: var(--viz-high);
+}
+
+.viz-legend__item--good::before {
+  background-color: color-mix(in srgb, var(--viz-good) 25%, transparent);
+  border-color: var(--viz-good);
+}
+
+/* Bars: one per recursion-tree level, width proportional to its work. */
+.viz-bar {
+  display: block;
+  height: 0.9rem;
+  min-width: 2px;
+  background-color: color-mix(in srgb, var(--viz-low) 55%, transparent);
+  border-radius: 2px;
+}
+
+.viz-bar--leaves {
+  background-color: color-mix(in srgb, var(--viz-good) 55%, transparent);
+}
+
+.viz-grid td.is-bar {
+  width: 10rem;
+  text-align: left;
+  background-color: transparent;
+  border-color: transparent;
 }
